@@ -1,29 +1,33 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-    <h2>Albums</h2>
+    <h1>Albums</h1>
     <ul>
-      <router-link tag="li" v-bind:to="{ name : 'Album', params : { id: album.id }}" v-for="album in albums">
-	<a>{{ album.name }}</a>
+      <router-link tag="li" v-bind:to="{ name : 'Album', params : { id: album.Id }}" v-for="album in albums">
+	<a>{{ album.Name }}</a>
       </router-link>
     </ul>
   </div>
 </template>
 
 <script>
-  export default {
-        data() {
-            return {
-                albums:[]
-            }
-        },
-        methods: {
-	    mounted() {
-		axios.get(process.env.API_ENDPOINT + "/")
-		    .then(response => {this.albums = response.data.albums})
-	    }
-        }
+export default {
+  data () {
+    return {
+      albums: []
     }
+  },
+  created: function () {
+    this.getAlbums()
+  },
+  methods: {
+    getAlbums() {
+      axios.get(process.env.API_ENDPOINT + "/")
+	.then(response => {
+	  this.albums = response.data.Albums;
+	})
+    }
+  }
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
