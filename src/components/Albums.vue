@@ -1,9 +1,10 @@
 <template>
   <div class="hello">
-    <h1>Albums</h1>
+
+    <h1>albums</h1>
     <ul>
-      <router-link tag="li" v-bind:to="{ name : 'Album', params : { id: album.Id }}" v-for="album in albums">
-	<a>{{ album.Name }}</a>
+      <router-link tag="li" v-bind:to="{ name : 'Album', params : { albumId: album.Id }}" v-for="album in albums">
+	<a><img v-lazy='album.ThumbnailUrl' class='thumbnail' /></a>
       </router-link>
     </ul>
   </div>
@@ -11,22 +12,22 @@
 
 <script>
 export default {
-  data () {
-    return {
-      albums: []
+    data () {
+	return {
+	    albums: []
+	}
+    },
+    created: function () {
+	this.getalbums()
+    },
+    methods: {
+	getalbums() {
+	    axios.get(process.env.API_ENDPOINT + "/")
+		.then(response => {
+		    this.albums = response.data.Albums;
+		})
+	}
     }
-  },
-  created: function () {
-    this.getAlbums()
-  },
-  methods: {
-    getAlbums() {
-      axios.get(process.env.API_ENDPOINT + "/")
-	.then(response => {
-	  this.albums = response.data.Albums;
-	})
-    }
-  }
 }
 </script>
 

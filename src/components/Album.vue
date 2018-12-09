@@ -1,28 +1,34 @@
 <template>
   <div class="hello">
-    <h1>{{ album.name }}</h1>
+    <h1>{{ album.Name }}</h1>
     <ul>
-      <router-link tag="li" v-bind:to="{ name : 'Image', params : { id: image.id }}" v-for="image in album.images">
-	<a>{{ image.filename }}</a>
+      <router-link tag="li" v-bind:to="{ name : 'Image', params : { url: image.Url, filename: image.Filename }}" v-for="image in album.Images">
+	<a><img v-lazy='image.ThumbnailUrl' class='thumbnail' /></a>
       </router-link>
     </ul>
   </div>
 </template>
 
 <script>
-  export default {
-        data() {
-            return {
-                album:{}
-            }
-        },
-        methods: {
-	    mounted() {
-		axios.get(process.env.API_ENDPOINT + "/albums/" + album.id)
-		    .then(response => {this.album = response.data.album})
-	    }
-        }
+export default {
+    data () {
+	return {
+	    album: {}
+	}
+    },
+    created: function () {
+	this.getAlbum(this.$route.params.albumId)
+    },
+    methods: {
+	getAlbum(id) {
+	    axios.get(process.env.API_ENDPOINT + "/albums/" + id)
+		.then(response => {
+		    this.album = response.data.Album;;
+		    this.images = response.data.Album.Images;
+		})
+	}
     }
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
