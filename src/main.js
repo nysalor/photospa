@@ -4,6 +4,14 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import axios from 'axios'
+import VueLazyload from 'vue-lazyload'
+
+Vue.use(VueLazyload, {
+  preLoad: 1.3,
+  error: require('./assets/notfound.png'),
+  loading: require('./assets/loading.gif'),
+  attempt: 1
+})
 
 Vue.config.productionTip = false
 window.axios = require('axios');
