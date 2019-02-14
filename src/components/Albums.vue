@@ -4,7 +4,17 @@
     <h1>albums</h1>
     <ul>
       <router-link tag="li" v-bind:to="{ name : 'Album', params : { albumId: album.Id }}" v-for="album in albums">
-	<a><img v-lazy='album.ThumbnailUrl' class='thumbnail' /></a>
+	<div class="thumbnail">
+	  <a>
+	    <img v-lazy='album.ThumbnailUrl' />
+	    <span class="title">
+	      <strong>
+		{{ album.Name }}
+	      </strong>
+	      ({{ album.ImagesCount }})
+	    </span>
+	  </a>
+	</div>
       </router-link>
     </ul>
   </div>
@@ -34,17 +44,17 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h1, h2 {
-  font-weight: normal;
+    font-weight: normal;
 }
 ul {
-  list-style-type: none;
-  padding: 0;
+    list-style-type: none;
+    padding: 0;
 }
 li {
-  display: inline-block;
-  margin: 0 10px;
+    display: inline-block;
+    margin: 0 10px;
 }
 a {
-  color: #42b983;
+    color: #42b983;
 }
 </style>
