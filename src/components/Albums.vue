@@ -1,23 +1,25 @@
 <template>
-  <div class="hello">
-
-    <h1>albums</h1>
-    <ul>
-      <router-link tag="li" v-bind:to="{ name : 'Album', params : { albumId: album.Id }}" v-for="album in albums">
-	<div class="thumbnail">
-	  <a>
-	    <img v-lazy='album.ThumbnailUrl' />
-	    <span class="title">
-	      <strong>
-		{{ album.Name }}
-	      </strong>
-	      ({{ album.ImagesCount }})
-	    </span>
-	  </a>
-	</div>
-      </router-link>
-    </ul>
-  </div>
+<div>
+  <nav class="breadcrumb" aria-label="breadcrumbs">
+    <li class="is-active"><a>Albums</a></li>
+  </nav>
+  <h1>albums</h1>
+  <ul>
+    <router-link tag="li" v-bind:to="{ name : 'Album', params : { albumId: album.Id }}" v-for="album in albums">
+      <div class="thumbnail">
+	<a>
+	  <img v-lazy='album.ThumbnailUrl' />
+	  <span class="title">
+	    <strong>
+	      {{ album.Name }}
+	    </strong>
+	    ({{ album.ImagesCount }})
+	  </span>
+	</a>
+      </div>
+    </router-link>
+  </ul>
+</div>
 </template>
 
 <script>
