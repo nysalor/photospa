@@ -1,42 +1,107 @@
 <template>
-  <div class="hello">
-    <h1>{{ album.Name }}</h1>
-    <article id="elemSwitch">
-      <div id="listView" v-if="listView">
-	<ul>
-	  <li v-bind:to="{ name : 'Image', params : image}" @click="activate('image', idx)" v-for="(image, idx) in this.images">
-	    <div class="thumbnail">
-	      <a>
-		<img v-lazy='image.ThumbnailUrl' />
+<div>
+  <nav class="breadcrumb" aria-label="breadcrumbs">
+    <ul v-if="listView">
+      <router-link tag="li" v-bind:to="{ name : 'Albums' }">
+	<a>Albums</a>
+      </router-link>
+      <li class="is-active"><a>{{ album.Name }}</a></li>
+    </ul>
+    <ul v-else>
+      <router-link tag="li" v-bind:to="{ name : 'Albums' }">
+	<a>Albums</a>
+      </router-link>
+      <li><a @click="activate('list')">{{ album.Name }}</a></li>
+      <li class="is-active"><a>{{ currentImage.Filename }}</a></li>
+    </ul>
+  </nav>
+  <div class="columns">
+    <div v-if="listView" class="column is-full box is-centered">
+      <h1>{{ album.Name }} ({{ images.length }} images)</h1>
+    </div>
+    <div v-else class="column is-full box is-centered">
+      <h1>{{ currentImage.Filename }}</h1>
+    </div>
+  </div>
+  <article id="elemSwitch">
+    <div id="listView" v-if="listView">
+      <ul class="list">
+	<li v-bind:to="{ name : 'Image', params : image}" @click="activate('image', idx)" v-for="(image, idx) in this.images">
+	  <div class="thumbnail">
+	    <img v-lazy='image.ThumbnailUrl' />
+	  </div>
+	</li>
+      </ul>
+    </div>
+    <div id="imageView" v-else>
+      <div class="photo" @mouseenter="navOn" @mouseleave="navOff">
+	<div class="columns">
+	  <div class="enlarge column" v-if="navActive">
+	    <a v-bind:href="currentImage.Url" target="_blank">
+	      <span class="icon"><i class="fas fa-2x fa-search-plus"></i></span>
+	    </a>
+	  </div>
+	  <div class="info column is-one-quarter box has-text-left" v-if="navActive">
+	    <p>
+	      <span class="icon"><i class="fas fa-file-image"></i></span>
+	      {{ currentImage.Filename }}
+	    </p>
+	    <p>
+	      <span class="icon"><i class="fas fa-calendar-alt"></i></span>
+	      {{ currentImage.TookAt }}
+	    </p>
+	    <p>
+	      <span class="icon"><i class="fas fa-camera"></i></span>
+	      {{ currentImage.Model }}
+	    </p>
+	    <p>
+	      <span class="icon"><i class="fas fa-film"></i></span>
+	      {{ currentImage.FocalLength }}mm F{{ currentImage.FNumber }} {{ currentImage.ExposureTime }} ISO{{currentImage.Iso }} 
+	    </p>
+	    <p v-if="location">
+	      <span class="icon"><i class="fas fa-map-marker-alt"></i></span>
+	      <a v-bind:href="'http://maps.google.co.jp/maps?q=' + this.location" target="_blank">
+		{{ location }}
 	      </a>
-	    </div>
-	  </li>
-	</ul>
-      </div>
-      <div id="imageView" v-else>
-	<div class="image">
-	  <a v-if="next" @click="activate('image', currentIdx + 1)">
-	    <img v-bind:src="currentImage.Url" />
-	  </a>
-
-	  
-	  <div class="nav">
-	    <button v-if="prev" @click="activate('image', currentIdx - 1)">
+	    </p>
+	  </div>
+	</div>
+	<a v-if="next" @click="activate('image', currentIdx + 1)">
+	  <img v-bind:src="currentImage.Url" />
+	</a>
+	<div class="columns" v-if="navActive">
+	  <div class="navthumb column prev">
+	    <figure class="image is-128x128 prev" v-if="prev">
+	      <a @click="activate('image', currentIdx - 1)">
+		<img v-bind:src='previousImage.ThumbnailUrl' />
+	      </a>
+	    </figure>
+	  </div>
+	  <div class="navthumb column next">
+	    <figure class="image is-128x128" v-if="next">
+	      <a @click="activate('image', currentIdx + 1)">
+		<img v-bind:src='nextImage.ThumbnailUrl' />
+	      </a>
+	    </figure>
+	  </div>
+	  <div class="navigator column is-full" v-if="navActive">
+	    <button class="button is-black s-large" v-if="prev" @click="activate('image', currentIdx - 1)">
+	      <span class="icon"><i class="fas fa-caret-left"></i></span>
 	      Prev
 	    </button>
-	    <button @click="activate('list')">
+	    <button class="button is-black s-large" @click="activate('list')">
 	      Back
 	    </button>
-	    <button v-if="next" @click="activate('image', currentIdx + 1)">
+	    <button class="button is-black s-large" v-if="next" @click="activate('image', currentIdx + 1)">
 	      Next
+	      <span class="icon"><i class="fas fa-caret-right"></i></span>
 	    </button>
-	    <div>
-	    </div>
 	  </div>
 	</div>
       </div>
-    </article>
-  </div>
+    </div>
+  </article>
+</div>
 </template>
 
 <script>
@@ -45,14 +110,16 @@ export default {
 	return {
 	    album: {},
 	    images: [],
-	    precv: false,
+	    prev: false,
 	    next: false,
 	    currentImage: null,
 	    currentIdx: 0,
 	    previousImage: null,
 	    nextImage: null,
 	    neighborImaghes: [],
-	    listView: true
+	    listView: true,
+	    navActive: false,
+	    location: null
 	}
     },
     created: function () {
@@ -83,10 +150,23 @@ export default {
 		} else {
 		    this.next = false
 		}
+		if (this.currentImage.Latitude != 0 && this.currentImage.Longitude != 0) {
+		    var latitude = Math.floor(this.currentImage.Latitude*10000) / 10000
+		    var longitude = Math.floor(this.currentImage.Longitude*10000) / 10000
+		    this.location = String(latitude) + ',' + String(longitude)
+		} else {
+		    this.location = null
+		}
 	    } else {
 		this.listView = true
 	    }
-	}
+	},
+	navOn: function() {
+	    this.navActive = true
+	},
+	navOff: function() {
+	    this.navActive = false
+	},
     }
 }
 </script>
@@ -96,11 +176,11 @@ export default {
 h1, h2 {
   font-weight: normal;
 }
-ul {
+ul.list {
   list-style-type: none;
   padding: 0;
 }
-li {
+ul.list li {
   display: inline-block;
   margin: 0 10px;
 }

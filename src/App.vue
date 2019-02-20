@@ -12,19 +12,17 @@ export default {
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+    margin: 10px;
 }
 div.thumbnail {
+    height: 240px;
     width: 320px;
     position: relative;
 }
 div.thumbnail img {
-    width: 100%;
+    height: 240px;
+    width: 320px;
+    object-fit: cover;
 }
 div.thumbnail span.title {
     background: none repeat scroll 0 0 rgba(0,0,0,0.5);
@@ -42,9 +40,54 @@ div.thumbnail span.title {
     float: left;
     position: absolute;
 }
-div.image {
+div.photo {
+    position: relative;
+    background: black;
+    text-align: center;
+    margin: 0;
 }
-div.image span.caption {
+div.photo div.columns {
+    margin: 0;
+}
+div.photo img {
+    max-width: 100vw;
+    max-height: 85vh;
+    padding: 5px;
+    padding-right: 25px;
+}
+div.photo div.enlarge {
+    position: absolute;
+    right: 10px;
+    text-align: right;
+}
+div.photo div.navigator {
+    position: absolute;
+    bottom: 10px;
+    text-align: center;
+}
+div.photo div.navthumb.prev {
+    position: absolute;
+    bottom: 120px;
+    left: 10px;
+}
+div.photo div.navthumb.next {
+    position: absolute;
+    bottom: 120px;
+    right: 10px;
+}
+div.photo div.location {
+    position: absolute;
+    top: 10px;
+}
+div.photo div.info {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    -moz-opacity: 0.7;
+    opacity: 0.7;
+}
+
+div.photo span.caption {
     background: none repeat scroll 0 0 rgba(0,0,0,0.5);
     bottom: 0;
     color: White;
