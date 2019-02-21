@@ -3,7 +3,11 @@
   <nav class="breadcrumb" aria-label="breadcrumbs">
     <li class="is-active"><a>Albums</a></li>
   </nav>
-  <h1>albums</h1>
+  <div class="columns">
+    <div class="column is-full box is-centered">
+      <h1>Albums</h1>
+    </div>
+  </div>
   <ul>
     <router-link tag="li" v-bind:to="{ name : 'Album', params : { albumId: album.Id }}" v-for="album in albums">
       <div class="thumbnail">
