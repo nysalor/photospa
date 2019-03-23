@@ -24,6 +24,13 @@ div.thumbnail img {
     width: 320px;
     object-fit: cover;
 }
+div.thumbnail img.overwrap {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: white;
+    opacity: 0.6;
+}
 div.thumbnail span.title {
     background: none repeat scroll 0 0 rgba(0,0,0,0.5);
     bottom: 0;
