@@ -7,7 +7,9 @@
     <div class="column is-full box is-centered">
       <h1>Albums</h1>
       <input v-model="searchString" type="text" class="form-control" placeholder="" v-on:change="searchAlbums()">
-      <button v-on:click="searchAlbums">Search</button>
+      <button v-on:click="searchAlbums">
+	<span class="icon is-small"><i class="fas fa-search"></i></span>
+      </button>
     </div>
   </div>
   <ul>
