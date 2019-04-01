@@ -14,7 +14,7 @@
     <router-link tag="li" v-bind:to="{ name : 'Album', params : { albumId: album.Id }}" v-for="album in albums">
       <div class="thumbnail">
 	<a>
-	  <img v-if="album.ThumbnailUrl" v-bind:src='album.ThumbnailUrl' />
+	  <img v-if="album.ThumbnailUrl" v-lazy='album.ThumbnailUrl' />
 	  <img v-else src="../assets/notfound.png" />
 	  <img v-if="album.Locked == 1" src="../assets/updating.png" class="overwrap">
 	  <span class="title">
@@ -49,6 +49,7 @@ export default {
 		})
 	},
 	searchAlbums() {
+	    this.albums = [];
 	    axios.post(process.env.API_ENDPOINT + "/search", { search: this.searchString })
 		.then(response => {
 		    this.albums = response.data.Albums;
