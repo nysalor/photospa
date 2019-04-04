@@ -18,6 +18,10 @@
   <div class="columns">
     <div v-if="listView" class="column is-full box is-centered">
       <h1>{{ album.Name }} ({{ images.length }} images)</h1>
+      <input v-model="searchString" type="text" class="form-control" placeholder="" v-on:change="searchImages()">
+      <button v-on:click="searchImages">
+	<span class="icon is-small"><i class="fas fa-search"></i></span>
+      </button>
     </div>
     <div v-else class="column is-full box is-centered">
       <h1>{{ currentImage.Filename }}</h1>
@@ -66,9 +70,14 @@
 	    </p>
 	  </div>
 	</div>
-	<a v-if="next" @click="activate('image', currentIdx + 1)">
+	<article v-if="next">
+	  <a @click="activate('image', currentIdx + 1)">
+	    <img v-bind:src="currentImage.Url" />
+	  </a>
+	</article>
+	<article v-else>
 	  <img v-bind:src="currentImage.Url" />
-	</a>
+	</article>
 	<div class="columns" v-if="navActive">
 	  <div class="navthumb column prev">
 	    <figure class="image is-128x128 prev" v-if="prev">
@@ -119,7 +128,8 @@ export default {
 	    neighborImaghes: [],
 	    listView: true,
 	    navActive: false,
-	    location: null
+	    location: null,
+	    searchString: ''
 	}
     },
     created: function () {
@@ -167,6 +177,19 @@ export default {
 	navOff: function() {
 	    this.navActive = false
 	},
+	searchImages: function() {
+	    this.images = [];
+	    axios.post(process.env.API_ENDPOINT + "/albums/" + this.album.Id + "/search", { search: this.searchString })
+		.then(response => {
+		    this.album = response.data.Album;
+		    this.images = response.data.Album.Images;
+		})
+	}
+    },
+    watch: {
+	searchString() {
+	    this.searchImages()
+	}
     }
 }
 </script>
